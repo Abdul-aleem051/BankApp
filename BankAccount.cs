@@ -8,15 +8,17 @@ namespace SimpleBankApp
     public class BankAccount : IBankAccount
     {
         public string Username { get; set; }
+        public string PhoneNumber { get; set; }
         public string AccountNumber { get; set; }
         public string Password { get; set; }
         public float Balance { get; set; }
 
-        public BankAccount(string username, string password)
+        public BankAccount(string username,string phoneNumber, string password)
         {
             Username = username;
-            Random random = new Random();
-            AccountNumber = random.Next(1000000000).ToString();
+            PhoneNumber = phoneNumber;
+            //Random random = new Random();
+            AccountNumber = phoneNumber.Trim();
             Password = password;
             Balance = 200.0f;
         }

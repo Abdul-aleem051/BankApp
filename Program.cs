@@ -1,6 +1,7 @@
 ﻿using SimpleBankApp;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Linq;
 
 List<BankAccount> accounts = new List<BankAccount>();
@@ -10,10 +11,12 @@ Menu menu = new Menu();
 
 while (true)
 {
+    Console.ForegroundColor = ConsoleColor.DarkGreen;
     Console.WriteLine("\n===== WELCOME TO BOLAK MICROFINANCE-BANK! =====");
     Console.WriteLine("1. Create Account");
     Console.WriteLine("2. Log In");
     Console.WriteLine("3. Exit");
+    Console.ResetColor();
 
     try
     {
@@ -34,54 +37,133 @@ while (true)
                 Console.WriteLine("Invalid option. Try again.");
                 break;
         }
+
     }
     catch (Exception ex)
     {
+        Console.BackgroundColor = ConsoleColor.Black;
+        Console.ForegroundColor = ConsoleColor.DarkRed;
         Console.WriteLine($"Error: {ex.Message}");
+        Console.ResetColor();
     }
 }
-
-
 void CreateAccount()
 {
+    Console.ForegroundColor = ConsoleColor.DarkGreen;
     Console.Write("Enter username: ");
     string username = Console.ReadLine()!;
+
+    Console.Write("Enter Phonenumber: ");
+    string phoneNumber = Console.ReadLine()!;
+
     Console.Write("Enter password: ");
-    string password = Console.ReadLine()!;
+    string password = ReadPassword();
+    Console.ResetColor();
 
     if (accounts.Any(acc => acc.Username == username))
     {
-        Console.WriteLine("Account with that username already exists.");
+        Console.BackgroundColor = ConsoleColor.Black;
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine("Account already exists.");
+        Console.ResetColor();
+    }
+    else if (accounts.Any(acc => acc.PhoneNumber == phoneNumber))
+    {
+        Console.BackgroundColor = ConsoleColor.Black;
+        Console.ForegroundColor = ConsoleColor.DarkRed;
+        Console.WriteLine("Account with this Phone number already exists.");
+        Console.ResetColor();
     }
     else
     {
-        BankAccount newAccount = new BankAccount(username, password);
+        BankAccount newAccount = new BankAccount(username, phoneNumber, password);
         accounts.Add(newAccount);
 
-        loggedInAccount = new BankAccount(username, password);
+        loggedInAccount = new BankAccount(username, phoneNumber, password);
         Console.WriteLine($"Account created! Your account number is {loggedInAccount.AccountNumber}");
         Console.ReadKey();
         Console.WriteLine($"Account created successfully! A bonus of $200 has been credited to your balance.");
     }
 }
 
+string ReadPassword()
+{
+    char[] password = new char[0];
+    int currentLength = 0;
+    int maxLength = 8;  
+
+    while (currentLength < maxLength)
+    {
+        ConsoleKeyInfo keyInfo = Console.ReadKey(true); 
+
+        if (keyInfo.Key == ConsoleKey.Backspace)
+        {
+            if (currentLength > 0)
+            {
+                currentLength--;
+                Console.Write("\b \b");
+            }
+        }
+
+        else if (keyInfo.Key == ConsoleKey.Enter)
+        {
+            break;
+        }
+        else
+        {
+        
+            Array.Resize(ref password, currentLength + 1);
+            password[currentLength] = keyInfo.KeyChar;
+            currentLength++;
+
+        
+            Console.Write("*");
+        }
+    }
+
+    Console.WriteLine(); // Move to the next line after password entry
+    return new string(password);  // Return the password as a string
+}
+
+
+static void ValidateContactPhoneNumber(string phoneNumber)
+{
+    string phoneNumberPattern = @"^\d+$";
+
+    if (!Regex.IsMatch(phoneNumber, phoneNumberPattern))
+    {
+        throw new Exception("Phone number cannot contain special character(s)");
+    }
+
+    if (phoneNumber?.Length < 11 || phoneNumber?.Length > 11)
+    {
+        throw new Exception("Phone number cannot be less or greater than 11 digits");
+    }
+}
+
+
 void LogIn()
 {
-    Console.Write("Enter username: ");
-    string username = Console.ReadLine()!;
+    Console.Write("Enter mobile number: ");
+    string phoneNumber = Console.ReadLine()!;
     Console.Write("Enter password: ");
-    string password = Console.ReadLine()!;
+    string password = ReadPassword();
 
-    loggedInAccount = accounts.FirstOrDefault(acc => acc.Username == username && acc.Password == password)!;
+    loggedInAccount = accounts.FirstOrDefault(acc => acc.PhoneNumber == phoneNumber && acc.Password == password)!;
 
     if (loggedInAccount != null)
     {
+        Console.ForegroundColor = ConsoleColor.DarkGreen;
         Console.WriteLine("Login successful!");
+        Console.WriteLine($"Welcome ");
         AccountMenu();
+        Console.ResetColor();
     }
     else
     {
+        Console.ForegroundColor = ConsoleColor.DarkRed;
         Console.WriteLine("Invalid username or password.");
+        Console.ResetColor();
     }
 }
 
@@ -121,8 +203,12 @@ void AccountMenu()
         }
         catch (Exception ex)
         {
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.DarkRed;
             Console.WriteLine($"Error: {ex.Message}");
+            Console.ResetColor();
         }
     }
+
 }
 

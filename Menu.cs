@@ -10,12 +10,15 @@ namespace SimpleBankApp
     {
         public void ShowMenu()
         {
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
             Console.WriteLine("\n====> MENU:");
             Console.WriteLine("1. Check Balance");
             Console.WriteLine("2. Deposit");
             Console.WriteLine("3. Withdraw");
             Console.WriteLine("4. Transfer");
             Console.WriteLine("5. Log Out");
+            Console.ResetColor();
         }
 
         public void ShowBalance(BankAccount account)
@@ -34,7 +37,10 @@ namespace SimpleBankApp
             }
             catch (Exception ex)
             {
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = ConsoleColor.DarkRed;
                 Console.WriteLine($"Error: {ex.Message}");
+                Console.ResetColor();
             }
         }
 
@@ -49,7 +55,10 @@ namespace SimpleBankApp
             }
             catch (Exception ex)
             {
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = ConsoleColor.DarkRed;
                 Console.WriteLine($"Error: {ex.Message}");
+                Console.ResetColor();
             }
         }
 
@@ -73,20 +82,29 @@ namespace SimpleBankApp
 
                 if (receiver == null)
                 {
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
                     Console.WriteLine("Recipient not found.");
+                    Console.ResetColor();
                     return;
                 }
 
                 Console.Write("Enter amount to transfer: $");
                 if (!float.TryParse(Console.ReadLine(), out float amount) || amount <= 0)
                 {
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
                     Console.WriteLine("Please enter a valid positive amount.");
+                    Console.ResetColor();
                     return;
                 }
 
                 if (sender.Balance < amount)
                 {
-                    Console.WriteLine("Insufficient funds for the transfer.");
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.WriteLine("Insuufficient funds for the transfer!!.");
+                    Console.ResetColor();
                     return;
                 }
 
@@ -95,7 +113,10 @@ namespace SimpleBankApp
             }
             catch (Exception ex)
             {
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = ConsoleColor.DarkRed;
                 Console.WriteLine($"Error: {ex.Message}");
+                Console.ResetColor();
             }
         }
     }
