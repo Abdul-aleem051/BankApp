@@ -50,21 +50,34 @@ while (true)
 void CreateAccount()
 {
     Console.ForegroundColor = ConsoleColor.DarkGreen;
-    Console.Write("Enter username: ");
+    Console.Write("Enter fullname: ");
     string username = Console.ReadLine()!;
 
     Console.Write("Enter Phonenumber: ");
     string phoneNumber = Console.ReadLine()!;
 
+
+    if (!string.IsNullOrWhiteSpace(phoneNumber))
+    {
+        ValidateContactPhoneNumber(phoneNumber);
+
+    }
+
+
     Console.Write("Enter password: ");
     string password = ReadPassword();
+    if (!string.IsNullOrWhiteSpace(password))
+    {
+        ValidatePassword(password);
+    }
     Console.ResetColor();
+
 
     if (accounts.Any(acc => acc.Username == username))
     {
         Console.BackgroundColor = ConsoleColor.Black;
         Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine("Account already exists.");
+        Console.WriteLine("Account with this name already exists!.");
         Console.ResetColor();
     }
     else if (accounts.Any(acc => acc.PhoneNumber == phoneNumber))
@@ -83,61 +96,6 @@ void CreateAccount()
         Console.WriteLine($"Account created! Your account number is {loggedInAccount.AccountNumber}");
         Console.ReadKey();
         Console.WriteLine($"Account created successfully! A bonus of $200 has been credited to your balance.");
-    }
-}
-
-string ReadPassword()
-{
-    char[] password = new char[0];
-    int currentLength = 0;
-    int maxLength = 8;  
-
-    while (currentLength < maxLength)
-    {
-        ConsoleKeyInfo keyInfo = Console.ReadKey(true); 
-
-        if (keyInfo.Key == ConsoleKey.Backspace)
-        {
-            if (currentLength > 0)
-            {
-                currentLength--;
-                Console.Write("\b \b");
-            }
-        }
-
-        else if (keyInfo.Key == ConsoleKey.Enter)
-        {
-            break;
-        }
-        else
-        {
-        
-            Array.Resize(ref password, currentLength + 1);
-            password[currentLength] = keyInfo.KeyChar;
-            currentLength++;
-
-        
-            Console.Write("*");
-        }
-    }
-
-    Console.WriteLine(); // Move to the next line after password entry
-    return new string(password);  // Return the password as a string
-}
-
-
-static void ValidateContactPhoneNumber(string phoneNumber)
-{
-    string phoneNumberPattern = @"^\d+$";
-
-    if (!Regex.IsMatch(phoneNumber, phoneNumberPattern))
-    {
-        throw new Exception("Phone number cannot contain special character(s)");
-    }
-
-    if (phoneNumber?.Length < 11 || phoneNumber?.Length > 11)
-    {
-        throw new Exception("Phone number cannot be less or greater than 11 digits");
     }
 }
 
@@ -166,6 +124,8 @@ void LogIn()
         Console.ResetColor();
     }
 }
+
+
 
 void AccountMenu()
 {
@@ -210,5 +170,76 @@ void AccountMenu()
         }
     }
 
+}
+
+
+string ReadPassword()
+{
+    char[] password = new char[0];
+    int currentLength = 0;
+    int maxLength = 6;
+
+    while (currentLength < maxLength)
+    {
+        ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+
+        if (keyInfo.Key == ConsoleKey.Backspace)
+        {
+            if (currentLength > 0)
+            {
+                currentLength--;
+                Console.Write("\b \b");
+            }
+        }
+
+        else if (keyInfo.Key == ConsoleKey.Enter)
+        {
+            break;
+        }
+        else
+        {
+
+            Array.Resize(ref password, currentLength + 1);
+            password[currentLength] = keyInfo.KeyChar;
+            currentLength++;
+
+
+            Console.Write("*");
+        }
+    }
+
+    Console.WriteLine(); 
+    return new string(password);  
+}
+
+
+static void ValidateContactPhoneNumber(string phoneNumber)
+{
+    string phoneNumberPattern = @"^\d+$";
+
+    if (!Regex.IsMatch(phoneNumber, phoneNumberPattern))
+    {
+        throw new Exception("Phone number cannot contain special character(s)");
+    }
+
+    if (phoneNumber?.Length < 11 || phoneNumber?.Length > 11)
+    {
+        throw new Exception("Phone number cannot be less or greater than 11 digits");
+    }
+}
+
+
+
+static void ValidatePassword(string password)
+{
+    string passwordPattern = @"^\d+$";
+    if(!Regex.IsMatch(password, passwordPattern))
+    {
+        throw new Exception("Password cannot contain special character(s)");
+    }
+    if(password?.Length < 6 || password?.Length > 6)
+    {
+        throw new Exception("Password must not be greater than or less than 6 digits");
+    }
 }
 
